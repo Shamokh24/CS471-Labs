@@ -1,0 +1,22 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %} Books List {% endblock title %}
+
+{% block content %}
+    <h1>Available Books</h1>
+    <div class="books-container">
+        <div>
+            <img src="{% static 'book1.jpg' %}" alt="Book 1" width="100">
+            <p>Django for Beginners</p>
+        </div>
+        <div>
+            <img src="{% static 'book2.jpg' %}" alt="Book 2" width="100">
+            <p>Mastering HTML5</p>
+        </div>
+        <div>
+            <img src="{% static 'book3.jpg' %}" alt="Book 3" width="100">
+            <p>Python Programming</p>
+        </div>
+    </div>
+{% endblock content %}
