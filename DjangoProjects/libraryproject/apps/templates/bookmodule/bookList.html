@@ -1,17 +1,14 @@
 {% extends "layouts/base.html" %}
 
-{% block title %}Search Results{% endblock %}
+{% block title %}Book List{% endblock %}
 
 {% block content %}
-<h1>Search Results</h1>
+<h1>Books</h1>
 {% if books %}
-    <ul>
-        {% for book in books %}
-        <li>
-            <strong>{{ book.title }}</strong> by {{ book.author }}
-        </li>
-        {% endfor %}
-    </ul>
+    {% for mybooks in books %}
+    <p>ID: {{ mybooks.id }}, Title: {{ mybooks.title }}, Author: {{ mybooks.author }}</p>
+    <hr>
+    {% endfor %}
 {% else %}
     <p>No books found.</p>
 {% endif %}
