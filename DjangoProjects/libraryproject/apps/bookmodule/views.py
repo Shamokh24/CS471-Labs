@@ -1,6 +1,34 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from .models import Book
+from django.db.models import Q
+from django.db.models import Count, Sum, Avg, Max, Min
+
+def task1(request):
+    books = Book.objects.filter(Q(price__lte=80))
+    return render(request, 'bookmodule/bookList.html', {'books': books})
+
+def task2(request):
+    books = Book.objects.filter(Q(edition__gt=3) & (Q(author__contains='qu') | Q(title__icontains='qu')))
+    return render(request, 'bookmodule/bookList.html', {'books': books})
+
+def task3(request):
+    books = Book.objects.filter(Q(edition__lte=3) & ~(Q(author__contains='qu') | Q(title__icontains='qu')))
+    return render(request, 'bookmodule/bookList.html', {'books': books})
+
+def task4(request):
+    books = Book.objects.order_by('title')
+    return render(request, 'bookmodule/bookList.html', {'books': books})
+
+def task5(request):
+    stats = Book.objects.aggregate(
+        total_books=Count('id'),
+        total_price=Sum('price'),
+        average_price=Avg('price'),
+        max_price=Max('price'),
+        min_price=Min('price')
+    )
+    return render(request, 'bookmodule/bookList.html', {'stats': stats})
 
 
 def index(request):

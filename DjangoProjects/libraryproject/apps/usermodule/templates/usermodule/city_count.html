@@ -1,0 +1,14 @@
+{% extends "C:\Users\asus\DjangoProjects\libraryproject\apps\templates\layouts\base.html" %}
+
+
+{% block title %}Student Count by City{% endblock %}
+
+{% block content %}
+<h1>Student Count by City</h1>
+<ul>
+    {% for city in city_stats %}
+    <li>{{ city.city }}: {{ city.student_count }} students</li>
+    {% endfor %}
+</ul>
+{% endblock %}
+

@@ -4,9 +4,18 @@
 
 {% block content %}
 <h1>Books</h1>
+{% if stats %}
+    <h2>Statistics</h2>
+    <p>Total Books: {{ stats.total_books }}</p>
+    <p>Total Price: {{ stats.total_price }}</p>
+    <p>Average Price: {{ stats.average_price }}</p>
+    <p>Max Price: {{ stats.max_price }}</p>
+    <p>Min Price: {{ stats.min_price }}</p>
+{% endif %}
+<h2>Book List</h2>
 {% if books %}
     {% for mybooks in books %}
-    <p>ID: {{ mybooks.id }}, Title: {{ mybooks.title }}, Author: {{ mybooks.author }}</p>
+    <p>ID: {{ mybooks.id }}, Title: {{ mybooks.title }}, Author: {{ mybooks.author }}, Price: {{ mybooks.price }}, Edition: {{ mybooks.edition }}</p>
     <hr>
     {% endfor %}
 {% else %}
