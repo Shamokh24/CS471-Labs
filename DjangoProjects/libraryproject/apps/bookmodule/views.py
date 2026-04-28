@@ -1,8 +1,9 @@
 from django.http import HttpResponse
 from django.shortcuts import render
-from .models import Book
-from django.db.models import Q
+from .models import *
+from django.db.models import Q , F
 from django.db.models import Count, Sum, Avg, Max, Min
+from django.db.models.functions import Coalesce
 
 def task1(request):
     books = Book.objects.filter(Q(price__lte=80))
@@ -103,3 +104,41 @@ def complex_query(request):
     else:
         return render(request, 'bookmodule/index.html')
 
+
+def lab9_all_tasks(request):
+    # --- Task 1: Percentage (Calculated in View for performance) ---
+    total_qty = NBook.objects.aggregate(t=Sum('quantity'))['t'] or 1
+    books = NBook.objects.annotate(
+        percentage=(F('quantity') * 100.0) / total_qty
+    )
+
+    # --- Tasks 2, 4, 5, 6: Publisher Annotations ---
+    publishers = Publisher.objects.annotate(
+        total_stock=Coalesce(Sum('nbook__quantity'), 0),
+        avg_price=Coalesce(Avg('nbook__price'), 0.0),
+        min_price=Coalesce(Min('nbook__price'), 0.0),
+        max_price=Coalesce(Max('nbook__price'), 0.0),
+        # Task 5: High Rating (e.g., rating >= 4)
+        highly_rated=Count('nbook', filter=Q(nbook__rating__gte=3)),
+        # Task 6: Custom Filter
+        task6_count=Count('nbook', filter=Q(
+            nbook__price__gt=50, 
+            nbook__quantity__lt=5, 
+            nbook__quantity__gte=1
+        ))
+    )
+
+    # --- Task 3: Oldest Books ---
+    old_dates = Publisher.objects.annotate(
+        old_d=Min('nbook__pubdate')
+    ).values_list('old_d', flat=True)
+    
+    oldest_books = NBook.objects.filter(pubdate__in=old_dates)
+
+    context = {
+        'books': books,
+        'publishers': publishers,
+        'oldest_books': oldest_books
+    }
+
+    return render(request, 'bookmodule/lab9.html', context)
