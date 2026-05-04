@@ -1,42 +1,65 @@
 from django.shortcuts import render
-from .models import Student, Address, Department, Course
-from django.db.models import Count, Min
+from django.db.models import Count
+from .models import Student, Student2, StudentProfile
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.urls import reverse_lazy
+from .forms import StudentForm, ProfileForm, Student2Form
+from django.shortcuts import render, redirect, get_object_or_404
 
-# Existing views (DO NOT REMOVE)
-def city_count(request):
-    city_stats = Address.objects.annotate(student_count=Count('student'))
-    return render(request, 'usermodule/city_count.html', {'city_stats': city_stats})
+def student_city_count(request):
+    # This groups students by their address city and counts them
+    city_counts = Student.objects.values('address__city').annotate(count=Count('id'))
+    return render(request, 'usermodule/city_count.html', {'city_counts': city_counts})
 
-# New views for Lab 9
-def department_student_count(request):
-    departments = Department.objects.annotate(student_count=Count('students'))
-    return render(request, 'usermodule/department_count.html', {'departments': departments})
 
-def course_student_count(request):
-    courses = Course.objects.annotate(student_count=Count('students'))
-    return render(request, 'usermodule/course_count.html', {'courses': courses})
+def student_list(request):
+    #students = Student.objects.all()
+    #return render(request, 'usermodule/student_list.html', {'students': students})
+    students = Student2.objects.all() 
+    return render(request, 'usermodule/student_list.html', {'students': students})
 
-def oldest_student_per_department(request):
-    departments = Department.objects.annotate(
-        oldest_student_id=Min('students__id')
-    ).prefetch_related('students')
-    
-    dept_data = []
-    for dept in departments:
-        oldest_student = dept.students.filter(id=dept.oldest_student_id).first()
-        dept_data.append({
-            'department': dept,
-            'oldest_student': oldest_student
-        })
-    
-    return render(request, 'usermodule/oldest_student.html', {'dept_data': dept_data})
+# apps/usermodule/views.py
+def student_add(request):
+    # Make sure this is Student2Form!
+    form = Student2Form(request.POST or None) 
+    if form.is_valid():
+        form.save()
+        return redirect('student_list')
+    return render(request, 'usermodule/student_form.html', {'form': form})
 
-def departments_more_than_two_students(request):
-    departments = Department.objects.annotate(
-        student_count=Count('students')
-    ).filter(
-        student_count__gt=2
-    ).order_by('-student_count')
-    
-    return render(request, 'usermodule/departments_more_than_two.html', {'departments': departments})
+def student_update(request, id):
+    student = get_object_or_404(Student2, id=id)
+    form = StudentForm(request.POST or None, instance=student)
+    if form.is_valid():
+        form.save()
+        return redirect('student_list')
+    return render(request, 'usermodule/student_form.html', {'form': form})
 
+def student_delete(request, id):
+    student = get_object_or_404(Student2, id=id)
+    if request.method == 'POST':
+        student.delete()
+        return redirect('student_list')
+    return render(request, 'usermodule/student_delete.html', {'student': student})
+
+def upload_profile(request):
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, request.FILES) # FILES is required for images
+        if form.is_valid():
+            form.save()
+            return redirect('profile_list')
+    else:
+        form = ProfileForm()
+    return render(request, 'usermodule/upload.html', {'form': form})
+
+def student2_add(request):
+    form = Student2Form(request.POST or None)
+    if form.is_valid():
+        form.save() # Django handles saving the Many-to-Many links automatically
+        return redirect('student_list')
+    return render(request, 'usermodule/student_form.html', {'form': form})
+
+def profile_list(request):
+    profiles = StudentProfile.objects.all()
+    return render(request, 'usermodule/profile_list.html', {'profiles': profiles})

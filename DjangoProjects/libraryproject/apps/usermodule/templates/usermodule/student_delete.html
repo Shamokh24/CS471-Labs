@@ -1,0 +1,31 @@
+{% extends "layouts/base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <!-- Red border signifies a dangerous/destructive action -->
+            <div class="card border-danger shadow p-4 text-center bg-white">
+                <h2 class="text-danger mb-4">Confirm Deletion</h2>
+                
+                <p class="lead">
+                    Are you sure you want to permanently delete student 
+                    <strong>"{{ student.name }}"</strong>?
+                </p>
+                <p class="text-muted small">This action cannot be undone.</p>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-flex justify-content-center gap-3 mt-4">
+                        <button type="submit" class="btn btn-danger px-4">
+                            Yes, Delete
+                        </button>
+                        <a href="{% url 'student_list' %}" class="btn btn-secondary px-4">
+                            No, Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

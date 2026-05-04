@@ -9,10 +9,14 @@ class Book(models.Model):
 class Publisher(models.Model):
   name = models.CharField(max_length=200)
   location = models.CharField(max_length=300)
+  def __str__(self):
+        return self.name
     
 class Author(models.Model):
   name = models.CharField(max_length=200)
   DOB = models.DateField(null=True)
+  def __str__(self):
+        return self.name
     
 class NBook(models.Model):
   title = models.CharField(max_length= 100)

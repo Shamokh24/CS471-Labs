@@ -1,9 +1,10 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import *
 from django.db.models import Q , F
 from django.db.models import Count, Sum, Avg, Max, Min
 from django.db.models.functions import Coalesce
+from .forms import NBookForm, BookForm
 
 def task1(request):
     books = Book.objects.filter(Q(price__lte=80))
@@ -142,3 +143,84 @@ def lab9_all_tasks(request):
     }
 
     return render(request, 'bookmodule/lab9.html', context)
+
+# lab9, part1, task 1: List Books
+def list_books(request):
+    books = NBook.objects.all()
+    return render(request, 'bookmodule/listbooks.html', {'books': books})
+
+# lab9, part1, task 2: Add Book
+def add_book(request):
+    if request.method == 'POST':
+        form = NBookForm(request.POST)
+        
+        if form.is_valid():
+            form.save() 
+            return redirect('list_books') 
+    else:
+        form = NBookForm()
+    pass
+    publishers = Publisher.objects.all()
+    all_authors = Author.objects.all()
+    return render(request, 'bookmodule/addbook.html', {
+        'publishers': publishers, 
+        'all_authors': all_authors
+    })
+    return render(request, 'bookmodule/addBook.html', {'form': form})
+
+# lab9, part1, task 3: Edit Book
+def edit_book(request, id):
+    book = get_object_or_404(NBook, id=id)
+    publishers = Publisher.objects.all()
+    all_authors = Author.objects.all()
+    if request.method == "POST":
+        book.title = request.POST.get('title')
+        book.author = request.POST.get('author')
+        book.save()
+        return redirect('list_books')
+    return render(request, 'bookmodule/editbook.html', {
+        'book': book ,
+        'publishers': publishers, 
+        'all_authors': all_authors
+        })
+
+# lab9, part1, task 4: Delete Book
+def delete_book(request, id):
+    book = get_object_or_404(NBook, id=id)
+    book.delete()
+    return redirect('list_books')
+
+# lab9, part2, task 1: List Books with Django Forms
+def list_books_p2(request):
+    books = NBook.objects.all()
+    return render(request, 'bookmodule/listbooks_p2.html', {'books': books})
+
+# lab9, part2, task 2: Add Book with Django Forms
+def add_book_p2(request):
+    if request.method == "POST":
+        form = BookForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('list_books_p2')
+    else:
+        form = BookForm()
+    
+    return render(request, 'bookmodule/addbook_p2.html', {'form': form})
+
+# lab9, part2, task 3: Edit Book with Django Forms
+def edit_book_p2(request, id):
+    book = get_object_or_404(NBook, id=id)
+    if request.method == "POST":
+        form = NBookForm(request.POST, instance=book)
+        if form.is_valid():
+            form.save()
+            return redirect('list_books_p2')
+    else:
+        form = NBookForm(instance=book)
+    return render(request, 'bookmodule/editbook_p2.html', {'form': form})
+
+# lab9, part2, task 4: Delete Book with Django Forms
+def delete_book_p2(request, id):
+    book = get_object_or_404(NBook, id=id)
+    book.delete()
+    return redirect('list_books_p2')

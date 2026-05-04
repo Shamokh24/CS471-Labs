@@ -1,0 +1,18 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Add Book (with Django Form Validation)</h2>
+    
+    <form method="post" class="shadow p-4 bg-white rounded">
+        {% csrf_token %}
+        
+        {{ form.as_p }}
+        
+        <div class="mt-4">
+            <button type="submit" class="btn btn-success">Save New Book</button>
+            <a href="{% url 'list_books_p2' %}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
