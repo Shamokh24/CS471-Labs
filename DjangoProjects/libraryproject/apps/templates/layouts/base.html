@@ -15,7 +15,13 @@
   {% block stylesheets %}{% endblock stylesheets %}
 </head>
 <body>
-    
+  {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li class="{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+  {% endif %}
     {% include "includes/header.html" %}
  
     {% block content %} {% endblock content %}

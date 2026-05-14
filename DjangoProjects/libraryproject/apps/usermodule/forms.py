@@ -1,7 +1,7 @@
 from django import forms
 from .models import Student, Address, Student2, StudentProfile, Address2
-
-
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 
 class ProfileForm(forms.ModelForm):
     class Meta:
@@ -17,6 +17,15 @@ class Student2Form(forms.ModelForm):
 
 class StudentForm(forms.ModelForm):
     class Meta:
-        model = Student2  # Make sure this says Student2
-        fields = ['name', 'addresses']  # Must match the name in models.py
+        model = Student2  
+        fields = ['name', 'addresses']  
+
+class RegisterForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+    
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password1', 'password2']
+
+
         

@@ -6,7 +6,7 @@
         <a href="{% url 'student_add' %}" class="btn btn-success">Add Student</a>
     </div>
     
-    <div class="table-responsive shadow rounded">
+    <div class="table-responsive shadow rounded mb-5">
         <table class="table table-hover bg-white m-0">
             <thead class="table-dark">
                 <tr>
@@ -21,7 +21,7 @@
                 <tr>
                     <td>{{ student.name }}</td>
                     <td>{{ student.age }}</td>
-                   <td>{{ student.addresses|default:"No Address Provided" }}</td>
+                    <td>{{ student.addresses|default:"No Address Provided" }}</td>
                     <td class="text-center">
                         <a href="{% url 'student_update' student.id %}" class="btn btn-sm btn-warning">Edit</a>
                         <a href="{% url 'student_delete' student.id %}" class="btn btn-sm btn-danger">Delete</a>
@@ -31,5 +31,76 @@
             </tbody>
         </table>
     </div>
+
+    <hr>
+    <div class="row mt-5">
+        <div class="col-md-6">
+            <h3>Lab 13: JavaScript Tasks</h3>
+            
+            <div id="myDiv" class="p-3 border mb-2" style="background-color: lightgray;">
+                Original Text 
+            </div>
+            <button class="btn btn-primary mb-4" onclick="changeDiv()">Change Div (T1 & T2)</button>
+
+            <h5>My List [cite: 15]</h5>
+            <ul id="myList" class="list-group mb-4">
+                </ul>
+            <button class="btn btn-secondary mb-4" onclick="addItem()">Add Item (T3)</button>
+        </div>
+
+        <div class="col-md-6">
+            <div id="toggleDiv" class="alert alert-info" style="display: block;">
+                I am a toggleable div! 
+            </div>
+            <button class="btn btn-dark mb-4" onclick="toggleDiv()">Toggle Display (T4)</button>
+
+            <div id="hoverDiv" class="p-4 border text-center" style="background-color: lightgray; transition: 0.3s;">
+                Hover over me! 
+            </div>
+        </div>
+    </div>
 </div>
+
+<script>
+    // Tasks 1 & 2: Background and Text Change 
+    function changeDiv() {
+        let div = document.getElementById("myDiv");
+        div.style.backgroundColor = "lightblue"; // Task 1 [cite: 12]
+        div.innerHTML = "Text changed!"; // Task 2 [cite: 13]
+    }
+
+    // Task 3: Dynamic List Items [cite: 15]
+    let counter = 0;
+    function addItem() {
+        counter++;
+        let ul = document.getElementById("myList");
+        let li = document.createElement("li");
+        li.className = "list-group-item";
+        li.innerHTML = "New Item " + counter; // Task 3 [cite: 16]
+        ul.appendChild(li);
+    }
+
+    // Task 4: Toggle Display 
+    function toggleDiv() {
+        let div = document.getElementById("toggleDiv");
+        if (div.style.display === "none") {
+            div.style.display = "block";
+        } else {
+            div.style.display = "none";
+        }
+    }
+
+    // Task 5: Hover Effects [cite: 18]
+    let hDiv = document.getElementById("hoverDiv");
+
+    hDiv.onmouseover = function() {
+        this.style.backgroundColor = "lightcoral"; // [cite: 19]
+        this.style.fontSize = "24px"; // [cite: 19]
+    };
+
+    hDiv.onmouseout = function() {
+        this.style.backgroundColor = "lightgray"; // [cite: 20]
+        this.style.fontSize = "16px"; // [cite: 20]
+    };
+</script>
 {% endblock %}
